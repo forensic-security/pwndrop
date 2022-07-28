@@ -51,6 +51,11 @@ func FileCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Debug("upload: " + mime_type)
 
+	forced_mime_type := fhead.Header.Get("x-pwndrop-content-type")
+	if forced_mime_type == "" {
+		forced_mime_type = mime_type
+	}
+
 	os.Mkdir(filepath.Join(data_dir, "files"), 0700)
 	save_path := filepath.Join(data_dir, "files", fname)
 	if err := SaveUploadedFile(file, fhead, save_path); err != nil {
@@ -66,19 +71,19 @@ func FileCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	o := &storage.DbFile{
-		Uid:              user_id,
-		Name:             name,
-		Filename:         fname,
-		FileSize:         fi.Size(),
-		UrlPath:          url_path,
-		RedirectPath:     "",
-		MimeType:         mime_type,
-		SubMimeType:      mime_type,
-		OrigMimeType:     mime_type,
-		CreateTime:       time.Now().Unix(),
-		IsEnabled:        true,
-		IsPaused:         false,
-		RefSubFile:       0,
+		Uid:                  user_id,
+		Name:                 name,
+		Filename:             fname,
+		FileSize:             fi.Size(),
+		UrlPath:              url_path,
+		RedirectPath:         "",
+		MimeType:             forced_mime_type,
+		SubMimeType:          mime_type,
+		OrigMimeType:         mime_type,
+		CreateTime:           time.Now().Unix(),
+		IsEnabled:            true,
+		IsPaused:             false,
+		RefSubFile:           0,
 		DownloadsAllowedLeft: 1,
 	}
 
