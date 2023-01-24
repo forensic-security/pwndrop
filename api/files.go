@@ -1,7 +1,10 @@
 package api
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -72,21 +75,28 @@ func FileCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	hasher := sha256.New()
+	if _, err := io.Copy(hasher, file); err != nil {
+		log.Fatal("%s", err)  // FIXME
+	}
+	hash_sha256 := hex.EncodeToString(hasher.Sum(nil))
+
 	o := &storage.DbFile{
-		Uid:          user_id,
-		Name:         name,
-		Filename:     fname,
-		FileSize:     fi.Size(),
-		UrlPath:      url_path,
-		RedirectPath: "",
-		MimeType:     mime_type,
-		SubMimeType:  mime_type,
-		OrigMimeType: orig_mime_type,
-		CreateTime:   time.Now().Unix(),
-		IsEnabled:    true,
-		IsPaused:     false,
-		RefSubFile:   0,
+		Uid:                  user_id,
+		Name:                 name,
+		Filename:             fname,
+		FileSize:             fi.Size(),
+		UrlPath:              url_path,
+		RedirectPath:         "",
+		MimeType:             mime_type,
+		SubMimeType:          mime_type,
+		OrigMimeType:         orig_mime_type,
+		CreateTime:           time.Now().Unix(),
+		IsEnabled:            true,
+		IsPaused:             false,
+		RefSubFile:           0,
 		DownloadsAllowedLeft: 1,
+		HashSHA256:           hash_sha256,
 	}
 
 	f, err := storage.FileCreate(o)

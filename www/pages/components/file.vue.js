@@ -3,31 +3,31 @@ var appFile = Vue.component("app-file", {
 	<div ref="uploadItem" class="upload-item" :class="{'upload-disabled': !file.is_enabled, 'upload-paused': file.is_paused}">
 		<div class="row upload-desc">
 			<div class="settings">
-                <span class="btn-col">
-				<button class="btn btn-sm btn-primary btn-circle-sm" @click="$emit('editFile', file.id)" v-tooltip:top="'Change file settings'">
-					<i class="fas fa-cog"></i>
-				</button>
-                </span>
-                <span class="btn-col">
-				<button class="btn btn-sm btn-circle-sm" :class="{'btn-outline-secondary': !file.is_enabled, 'btn-success': file.is_enabled}" @click="$emit('enableFile', file.id)" v-tooltip:top="'Make file available for download'">
-					<i class="fas fa-power-off"></i>
-				</button>
-                </span>
-                <span class="btn-col">
-				<button class="btn btn-sm btn-circle-sm" :class="{'btn-outline-secondary': !file.is_paused, 'btn-gray': file.is_paused}" @click="$emit('pauseFile', file.id)" v-tooltip:top="'Enable the facade and serve the facade file instead of the original one'">
-					<i class="fas fa-mask"></i>
-				</button>
-                </span>
+				<span class="btn-col">
+					<button class="btn btn-sm btn-primary btn-circle-sm" @click="$emit('editFile', file.id)" v-tooltip:top="'Change file settings'">
+						<i class="fas fa-cog"></i>
+					</button>
+				</span>
+				<span class="btn-col">
+					<button class="btn btn-sm btn-circle-sm" :class="{'btn-outline-secondary': !file.is_enabled, 'btn-success': file.is_enabled}" @click="$emit('enableFile', file.id)" v-tooltip:top="'Make file available for download'">
+						<i class="fas fa-power-off"></i>
+					</button>
+				</span>
+				<span class="btn-col">
+					<button class="btn btn-sm btn-circle-sm" :class="{'btn-outline-secondary': !file.is_paused, 'btn-gray': file.is_paused}" @click="$emit('pauseFile', file.id)" v-tooltip:top="'Enable the facade and serve the facade file instead of the original one'">
+						<i class="fas fa-mask"></i>
+					</button>
+				</span>
 			</div>
 			<div class="col clip trans" :class="{'text-dim': file.is_paused}">
 				<span class="title">{{ file.name }}</span>
 			</div>
-            <div v-if="file.sub_file != null && !file.is_paused" class="col-auto shrink">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <div v-else-if="file.sub_file != null" class="col-auto shrink">
-                <i class="fas fa-arrow-right"></i>
-            </div>
+			<div v-if="file.sub_file != null && !file.is_paused" class="col-auto shrink">
+				<i class="fas fa-arrow-left"></i>
+			</div>
+			<div v-else-if="file.sub_file != null" class="col-auto shrink">
+				<i class="fas fa-arrow-right"></i>
+			</div>
 			<div v-if="file.sub_file != null" class="col clip trans" :class="{'text-dim': !file.is_paused}">
 				<span class="title">{{ file.sub_name }}</span>
 			</div>
@@ -57,13 +57,27 @@ var appFile = Vue.component("app-file", {
 					</a>
 				</span>
 			</div>
-            <div class="col-auto grow trans" :class="{'text-lg': file.is_paused}">
-                <small>{{ file.url_path }}</small>
-            </div>
-            <div class="col-auto grow trans" :class="{'text-lg': file.is_paused}">
-                <small v-if="['', -1].includes(file.downloads_allowed_left) == false">downloads left: {{ file.downloads_allowed_left }}</small>
-                <small v-if="['', -1].includes(file.downloads_allowed_left) == true ">downloads left: unlimited</small>
-            </div>
+			<div class="col clip trans" :class="{'text-lg': file.is_paused}">
+				<small :title=file.url_path>{{ file.url_path }}</small>
+			</div>
+			<div class="d-sm-block col text-right grow trans" :class="{'text-lg': file.is_paused}">
+				<small v-if="['', -1].includes(file.downloads_allowed_left) == false">downloads left: {{ file.downloads_allowed_left }}</small>
+				<small v-if="['', -1].includes(file.downloads_allowed_left) == true ">downloads left: unlimited</small>
+			</div>
+		</div>
+		<div class="row upload-info" v-show="!file.progress || file.progress == 100">
+			<div class="col-auto shrink clip">
+				<span class="btn-col">
+					<a class="btn-copy" ref="copySha256" href @click.prevent="copySha256()">
+						<button class="btn btn-sm btn-outline-success btn-copy-link" v-tooltip:bottom="'Copy SHA-256 checksum to clipboard'">
+							<i class="fas fa-copy" style="margin-right: 5px"></i>SHA-256
+						</button>
+					</a>
+				</span>
+			</div>
+			<div class="col-auto grow trans" :class="{'text-lg': file.is_paused}">
+				<small>{{ file.hash_sha256 }}</small>
+			</div>
 			<div class="d-none d-sm-block col text-right clip trans" :class="{'text-lg': file.is_paused}">
 				<small>{{ file.mime_type }}</small>
 			</div>

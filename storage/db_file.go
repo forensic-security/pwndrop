@@ -21,6 +21,7 @@ type DbFile struct {
 	SubMimeType          string `json:"sub_mime_type"`
 	RefSubFile           int    `json:"ref_sub_file"`
 	DownloadsAllowedLeft int    `json:"downloads_allowed_left"`
+	HashSHA256           string `json:"hash_sha256"`
 }
 
 func FileCreate(o *DbFile) (*DbFile, error) {
@@ -180,4 +181,3 @@ func FileServed(id int) (*DbFile, error) {
 	}
 	return o, nil
 }
-
