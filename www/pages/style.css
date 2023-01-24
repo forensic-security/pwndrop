@@ -366,7 +366,8 @@ a:hover {
 }
 
 .btn-copy-link {
-	border-radius: 16px;
+    border-radius: 16px;
+    display: inline;
 }
 
 .btn-col {
@@ -381,7 +382,7 @@ a:hover {
     transition-duration: 0.4s
 }
 
-/* fileview.vue */
+/* file_view.vue */
 
 #dropzone {
 	background: gray;
@@ -513,6 +514,10 @@ a:hover {
 
 .input-group-append .btn {
 	border-radius: 21px;
+}
+
+.upload-cmd {
+	text-align: center;
 }
 
 .upload-list {
